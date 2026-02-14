@@ -50,11 +50,13 @@
         #yesBtn { background: linear-gradient(45deg, #ff4d6d, #ff758f); color: white; box-shadow: 0 6px 15px rgba(255, 77, 109, 0.4); left: 15%; }
         #noBtn { background-color: #ced4da; color: white; right: 15%; }
 
+        /* Кнопка "Вернуться" и "Тыкни сюда" */
         .special-btn {
             position: relative !important; margin-top: 20px !important;
-            width: auto !important; height: auto !important; padding: 10px 25px !important;
+            width: auto !important; height: auto !important; padding: 12px 30px !important;
             font-size: 18px !important; background: #ff758f !important; color: white !important;
             top: auto !important; transform: none !important; box-shadow: 0 4px 12px rgba(255, 117, 143, 0.4);
+            border-radius: 15px !important;
         }
 
         #game-overlay {
@@ -93,23 +95,22 @@
             75% { transform: translate(-49.5%, -50.5%) rotate(0.3deg); }
         }
 
+        /* Кнопка "2 шанс" - фикс положения и размера */
         #retryBtn {
-            position: fixed !important; bottom: 25px !important; right: 25px !important;
+            position: fixed !important; bottom: 30px !important; right: 30px !important;
             display: none; background-color: #FA8072 !important; color: white !important;
-            z-index: 2000; padding: 15px 30px !important; border-radius: 15px !important;
+            z-index: 4000; padding: 15px 25px !important; border-radius: 20px !important;
             font-size: 18px !important; width: auto !important; height: auto !important;
-            border: none; cursor: pointer; font-family: 'Comfortaa', cursive; font-weight: bold;
+            border: 3px solid white; cursor: pointer; font-family: 'Comfortaa', cursive;
+            font-weight: bold; box-shadow: 0 10px 25px rgba(0,0,0,0.2);
+            left: auto !important; top: auto !important; transform: none !important;
         }
     </style>
 </head>
 <body>
 
     <div id="main-ui">
-        <h1 id="text">Дашуля, ты будешь моей валентинкой?</h1>
-        <div class="buttons-container" id="btnContainer">
-            <button id="yesBtn">Да</button>
-            <button id="noBtn">Нет</button>
-        </div>
+        <!-- Контент вставляется через JS (функция resetMain) -->
     </div>
 
     <div id="game-overlay">
@@ -128,13 +129,9 @@
     <button id="retryBtn">Ладно, даю 2 шанс</button>
 
     <script>
-        const noBtn = document.getElementById('noBtn');
-        const yesBtn = document.getElementById('yesBtn');
-        const mainUi = document.getElementById('main-ui');
-        const btnContainer = document.getElementById('btnContainer');
         const retryBtn = document.getElementById('retryBtn');
         const dramaText = document.getElementById('drama-text');
-        
+        const mainUi = document.getElementById('main-ui');
         let wasInDrama = localStorage.getItem('wasInDrama') === 'true';
 
         function spawnItem(symbols, isSad) {
@@ -152,14 +149,12 @@
 
         function startFlow(mode) {
             if(window.flowInterval) clearInterval(window.flowInterval);
-            const isSadMode = mode === 'sad';
-            const icons = isSadMode ? ['💔', '😢', '😭', '🥺', '💧'] : ['❤️', '💖', '💗', '💕', '🌸'];
-            window.flowInterval = setInterval(() => spawnItem(icons, isSadMode), 200);
+            const icons = mode === 'sad' ? ['💔', '😢', '😭', '🥺', '💧'] : ['❤️', '💖', '💗', '💕', '🌸'];
+            window.flowInterval = setInterval(() => spawnItem(icons, mode === 'sad'), 200);
         }
 
-        startFlow('happy');
-
         function resetMain() {
+            mainUi.style.display = 'flex';
             mainUi.innerHTML = `
                 <h1 id="text">Дашуля, ты будешь моей валентинкой?</h1>
                 <div class="buttons-container" id="btnContainer">
@@ -167,25 +162,24 @@
                     <button id="noBtn">Нет</button>
                 </div>
             `;
-            // Перепривязываем события, так как мы удалили старые элементы
             document.getElementById('yesBtn').onclick = handleYes;
             document.getElementById('noBtn').onmousedown = handleNo;
-            document.getElementById('noBtn').style.right = '15%';
-            document.getElementById('noBtn').style.left = 'auto';
             window.noClickCount = 0;
         }
 
         function handleNo(e) {
             e.preventDefault();
-            const btn = e.target;
-            const container = document.getElementById('btnContainer');
             window.noClickCount = (window.noClickCount || 0) + 1;
             if (window.noClickCount >= 3) {
                 wasInDrama = true; localStorage.setItem('wasInDrama', 'true');
                 document.body.style.backgroundColor = "#e8e8e8";
-                mainUi.style.display = 'none'; retryBtn.style.display = 'block';
-                dramaText.style.display = 'block'; startFlow('sad');
+                mainUi.style.display = 'none'; 
+                retryBtn.style.display = 'block';
+                dramaText.style.display = 'block'; 
+                startFlow('sad');
             } else {
+                const btn = e.target;
+                const container = document.getElementById('btnContainer');
                 const maxX = container.offsetWidth - btn.offsetWidth;
                 const maxY = container.offsetHeight - btn.offsetHeight;
                 btn.style.left = Math.random() * maxX + 'px';
@@ -213,25 +207,20 @@
             document.body.style.backgroundColor = "#fff5f8"; startFlow('happy');
         }
 
-        // Первичная инициализация
-        yesBtn.onclick = handleYes;
-        noBtn.onmousedown = handleNo;
-
         function startPhotoGame() {
             const overlay = document.getElementById('game-overlay');
             overlay.style.display = 'flex';
             let remaining = 29;
-
             for (let i = 1; i <= 29; i++) {
                 const img = document.createElement('img');
                 img.src = `img/kisa${i}.jpg`;
                 img.className = 'game-photo';
-                const randomX = (Math.random() - 0.5) * 100;
-                const randomY = (Math.random() - 0.5) * 80;
-                const randomRot = (Math.random() - 0.5) * 60;
+                // Стопка в центре с легким хаосом
+                const randomX = (Math.random() - 0.5) * 80;
+                const randomY = (Math.random() - 0.5) * 60;
+                const randomRot = (Math.random() - 0.5) * 50;
                 img.style.transform = `translate(${randomX}px, ${randomY}px) rotate(${randomRot}deg)`;
                 img.style.zIndex = 4000 + (30 - i);
-
                 img.onclick = function() {
                     const side = Math.random() > 0.5 ? 1 : -1;
                     this.style.transform = `translate(${side * 1400}px, -600px) rotate(${side * 180}deg) scale(0.1)`;
@@ -244,11 +233,17 @@
             }
         }
 
-        retryBtn.addEventListener('click', () => {
-            dramaText.style.display = 'none'; retryBtn.style.display = 'none';
-            mainUi.style.display = 'flex'; resetMain();
-            document.body.style.backgroundColor = "#fff5f8"; startFlow('happy');
-        });
+        retryBtn.onclick = () => {
+            dramaText.style.display = 'none'; 
+            retryBtn.style.display = 'none';
+            resetMain();
+            document.body.style.backgroundColor = "#fff5f8"; 
+            startFlow('happy');
+        };
+
+        // Инициализация при загрузке
+        startFlow('happy');
+        resetMain();
     </script>
 </body>
 </html>
