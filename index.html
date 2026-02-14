@@ -7,14 +7,9 @@
     <link href="https://fonts.googleapis.com" rel="stylesheet">
     <style>
         body {
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            height: 100vh;
-            margin: 0;
-            background-color: #fff5f8;
-            font-family: 'Comfortaa', cursive;
-            overflow: hidden;
+            display: flex; align-items: center; justify-content: center;
+            height: 100vh; margin: 0; background-color: #fff5f8;
+            font-family: 'Comfortaa', cursive; overflow: hidden;
             transition: background-color 0.8s ease;
         }
 
@@ -42,14 +37,13 @@
             align-items: center; justify-content: center; position: relative;
         }
 
-        h1 { color: #d63384; font-family: 'Pacifico', cursive; font-size: 2.2rem; margin: 0 0 20px 0; pointer-events: none; }
+        h1 { color: #d63384; font-family: 'Pacifico', cursive; font-size: 2.2rem; margin: 0 0 20px 0; }
         
         .buttons-container { position: relative; width: 100%; height: 120px; }
 
         button {
             height: 55px; width: 160px; font-size: 22px; border: none; border-radius: 20px;
             cursor: pointer; font-weight: bold; font-family: 'Comfortaa', cursive;
-            display: flex; align-items: center; justify-content: center;
             position: absolute; top: 50%; transform: translateY(-50%); transition: 0.3s;
         }
 
@@ -65,13 +59,14 @@
 
         #game-overlay {
             position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-            background: rgba(255, 245, 248, 0.97); z-index: 3000; display: none;
+            background: rgba(255, 245, 248, 0.98); z-index: 3000; display: none;
             justify-content: center; align-items: center;
         }
 
         .game-photo {
-            position: absolute; width: 250px; border: 10px solid white;
-            border-radius: 5px; box-shadow: 0 5px 15px rgba(0,0,0,0.15);
+            position: absolute; width: 260px; border: 10px solid white;
+            border-bottom-width: 30px; /* Эффект поляроида */
+            border-radius: 3px; box-shadow: 0 4px 15px rgba(0,0,0,0.2);
             cursor: pointer; transition: transform 0.6s cubic-bezier(0.23, 1, 0.32, 1), opacity 0.5s;
             user-select: none;
         }
@@ -81,7 +76,7 @@
             animation: fadeIn 0.8s forwards;
         }
 
-        #qr-container img { width: 300px; border-radius: 20px; border: 6px solid #d63384; box-shadow: 0 15px 40px rgba(214, 51, 132, 0.3); }
+        #qr-container img { width: 320px; border-radius: 20px; border: 6px solid #d63384; box-shadow: 0 15px 40px rgba(214, 51, 132, 0.3); }
 
         @keyframes fadeIn { from { opacity: 0; transform: scale(0.8); } to { opacity: 1; transform: scale(1); } }
 
@@ -105,7 +100,6 @@
             z-index: 2000; padding: 15px 30px !important; border-radius: 15px !important;
             font-size: 18px !important; width: auto !important; height: auto !important;
             border: none; cursor: pointer; font-family: 'Comfortaa', cursive; font-weight: bold;
-            transform: none !important; left: auto !important; top: auto !important;
         }
     </style>
 </head>
@@ -173,8 +167,7 @@
                 wasInDrama = true; localStorage.setItem('wasInDrama', 'true');
                 document.body.style.backgroundColor = "#e8e8e8";
                 mainUi.style.display = 'none'; retryBtn.style.display = 'block';
-                dramaText.style.display = 'block';
-                startFlow('sad');
+                dramaText.style.display = 'block'; startFlow('sad');
             } else {
                 const maxX = btnContainer.offsetWidth - noBtn.offsetWidth;
                 const maxY = btnContainer.offsetHeight - noBtn.offsetHeight;
@@ -194,7 +187,7 @@
                 localStorage.removeItem('wasInDrama');
                 for(let i=0; i<40; i++) spawnItem(['❤️', '💖', '✨'], false);
             } else {
-                mainUi.innerHTML = `<h1 style="font-size: 1.8rem; margin: 0; width: 100%; text-align: center;">Вернись обратно, нажми нет и потом тока да, я че зря тут писал код 🤨</h1>`;
+                mainUi.innerHTML = `<h1 style="font-size: 1.6rem; margin: 0; width: 100%; text-align: center;">Вернись обратно, нажми нет и потом тока да, я че зря тут писал код 🤨</h1>`;
             }
             dramaText.style.display = 'none'; retryBtn.style.display = 'none';
             document.body.style.backgroundColor = "#fff5f8"; startFlow('happy');
@@ -210,17 +203,17 @@
                 img.src = `img/kisa${i}.jpg`;
                 img.className = 'game-photo';
                 
-                // Эффект стопки в центре
-                const randomX = (Math.random() - 0.5) * 30;
-                const randomY = (Math.random() - 0.5) * 30;
-                const randomRot = Math.random() * 20 - 10;
+                // Создаем эффект "небрежной стопки"
+                const randomX = (Math.random() - 0.5) * 80; // Смещение по горизонтали
+                const randomY = (Math.random() - 0.5) * 60; // Смещение по вертикали
+                const randomRot = (Math.random() - 0.5) * 50; // Заметный наклон (до 25 градусов в обе стороны)
                 
                 img.style.transform = `translate(${randomX}px, ${randomY}px) rotate(${randomRot}deg)`;
                 img.style.zIndex = 4000 + (30 - i);
 
                 img.onclick = function() {
                     const side = Math.random() > 0.5 ? 1 : -1;
-                    this.style.transform = `translate(${side * 1200}px, -400px) rotate(${side * 120}deg) scale(0.2)`;
+                    this.style.transform = `translate(${side * 1400}px, -600px) rotate(${side * 180}deg) scale(0.1)`;
                     this.style.opacity = '0';
                     this.style.pointerEvents = 'none';
                     setTimeout(() => this.remove(), 600);
