@@ -187,7 +187,7 @@
                 localStorage.removeItem('wasInDrama');
                 for(let i=0; i<40; i++) spawnItem(['❤️', '💖', '✨'], false);
             } else {
-                mainUi.innerHTML = `<h1 style="font-size: 1.6rem; margin: 0; width: 100%; text-align: center;">Вернись обратно, нажми нет и потом тока да, я че зря тут писал код 🤨</h1>`;
+                mainUi.innerHTML = `<h1 style="font-size: 1.6rem; margin: 0; width: 100%; text-align: center;">Вернись обратно, нажми нет и потом тока да, я че зря тут писал код </h1>`;
             }
             dramaText.style.display = 'none'; retryBtn.style.display = 'none';
             document.body.style.backgroundColor = "#fff5f8"; startFlow('happy');
@@ -206,7 +206,7 @@
                 // Создаем эффект "небрежной стопки"
                 const randomX = (Math.random() - 0.5) * 80; // Смещение по горизонтали
                 const randomY = (Math.random() - 0.5) * 60; // Смещение по вертикали
-                const randomRot = (Math.random() - 0.5) * 50; // Заметный наклон (до 25 градусов в обе стороны)
+                const randomRot = (Math.random() - 0.5) * 50; 
                 
                 img.style.transform = `translate(${randomX}px, ${randomY}px) rotate(${randomRot}deg)`;
                 img.style.zIndex = 4000 + (30 - i);
@@ -234,3 +234,4 @@
     </script>
 </body>
 </html>
+
