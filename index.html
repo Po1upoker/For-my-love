@@ -121,9 +121,9 @@
 
     <div id="game-overlay">
         <div id="qr-container">
-            <h2 style="color: #d63384; font-family: 'Pacifico', cursive; font-size: 2.2rem; margin-bottom: 20px;">Твой подарок! ❤️</h2>
+            <h2 style="color: #d63384; font-family: 'Pacifico', cursive; font-size: 2.2rem; margin-bottom: 20px;">Твой подарок ❤️</h2>
             <img src="img/qr.jpg" alt="QR Код">
-            <p style="margin-top: 20px; color: #d63384; font-weight: bold; font-size: 1.2rem;">Сканируй скорее, малышка!</p>
+            <p style="margin-top: 20px; color: #d63384; font-weight: bold; font-size: 1.2rem;">Ета вб, можешь не сканировать</p>
         </div>
     </div>
 
@@ -194,7 +194,7 @@
                 localStorage.removeItem('wasInDrama');
                 for(let i=0; i<40; i++) spawnItem(['❤️', '💖', '✨'], false);
             } else {
-                mainUi.innerHTML = `<h1 style="font-size: 1.8rem; margin: 0; width: 100%; text-align: center;">Вернись обратно, нажми нет и потом тока да, я че зря тут писал код 🤨</h1>`;
+                mainUi.innerHTML = `<h1 style="font-size: 1.8rem; margin: 0; width: 100%; text-align: center;">Вернись обратно, нажми нет и потом тока да, я че зря тут писал код чоле</h1>`;
             }
             dramaText.style.display = 'none'; retryBtn.style.display = 'none';
             document.body.style.backgroundColor = "#fff5f8"; startFlow('happy');
@@ -243,3 +243,4 @@
     </script>
 </body>
 </html>
+
