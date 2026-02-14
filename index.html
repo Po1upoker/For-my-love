@@ -44,48 +44,47 @@
             text-align: center; 
             z-index: 1000; 
             background: rgba(255, 255, 255, 0.95); 
-            padding: 40px 20px; 
+            padding: 30px; 
             border-radius: 40px; 
             box-shadow: 0 15px 40px rgba(214, 51, 132, 0.15);
             backdrop-filter: blur(5px);
             border: 2px solid #ffdeeb;
-            width: 90%;
-            max-width: 500px;
-            min-height: 320px;
+            width: 600px; /* Широкая */
+            max-width: 95vw;
+            height: 300px; /* Невысокая */
             display: flex;
             flex-direction: column;
             align-items: center;
-            justify-content: space-between; /* Распределяем контент: текст сверху, кнопки снизу */
+            justify-content: center;
             position: relative;
         }
 
         h1 { 
             color: #d63384; 
             font-family: 'Pacifico', cursive; 
-            font-size: 2rem; 
-            margin: 0 0 30px 0; 
-            line-height: 1.3;
+            font-size: 2.2rem; 
+            margin: 0 0 40px 0; 
+            line-height: 1.2;
+            width: 100%;
         }
         
         .buttons-container {
             position: relative;
             width: 100%;
-            height: 100px; /* Фиксированная высота для маневров кнопки Нет */
+            height: 80px;
             display: flex;
             justify-content: center;
             align-items: center;
-            gap: 20px; /* Расстояние между кнопками по умолчанию */
         }
 
         button {
-            padding: 15px 35px;
-            font-size: 20px;
+            padding: 12px 45px;
+            font-size: 22px;
             border: none;
             border-radius: 20px;
             cursor: pointer;
             font-weight: bold;
             font-family: 'Comfortaa', cursive;
-            transition: transform 0.2s, background-color 0.3s;
         }
 
         #yesBtn { 
@@ -93,13 +92,16 @@
             color: white;
             box-shadow: 0 6px 15px rgba(255, 77, 109, 0.4);
             z-index: 1001;
+            position: absolute;
+            left: 80px; /* Зафиксирована слева */
         }
 
         #noBtn { 
             background-color: #ced4da; 
             color: white; 
             z-index: 1002;
-            position: relative; /* В начале стоит в потоке */
+            position: absolute;
+            right: 80px; /* Изначально справа */
         }
 
         #drama-text {
@@ -203,22 +205,18 @@
                 dramaText.style.display = 'block';
                 startFlow('sad');
             } else {
-                // Вычисляем доступную область внутри контейнера кнопок
                 const maxX = btnContainer.clientWidth - noBtn.offsetWidth;
                 const maxY = btnContainer.clientHeight - noBtn.offsetHeight;
                 
-                noBtn.style.position = 'absolute';
-                // Ограничиваем разлет, чтобы кнопка не вылетала за границы белой карточки
-                noBtn.style.left = Math.max(0, Math.random() * maxX) + 'px';
-                noBtn.style.top = Math.max(0, Math.random() * maxY) + 'px';
-                noBtn.style.margin = '0';
+                noBtn.style.left = Math.random() * maxX + 'px';
+                noBtn.style.top = Math.random() * maxY + 'px';
             }
         });
 
         yesBtn.addEventListener('click', () => {
             const finalTitle = wasInDrama ? "Абалдеть! А ломалась-то как... ❤️" : "Абалдеть! ❤️";
             
-            mainUi.innerHTML = `<h1 style="font-size: 2.5rem;">${finalTitle}</h1>`;
+            mainUi.innerHTML = `<h1 style="font-size: 2.5rem; margin: 0;">${finalTitle}</h1>`;
             dramaText.style.display = 'none';
             retryBtn.style.display = 'none';
             document.body.style.backgroundColor = "#fff5f8";
@@ -234,12 +232,12 @@
             document.body.style.backgroundColor = "#fff5f8";
             startFlow('happy');
             noClickCount = 0;
-            // Сбрасываем позицию кнопки Нет
-            noBtn.style.position = 'relative';
             noBtn.style.left = 'auto';
+            noBtn.style.right = '80px';
             noBtn.style.top = 'auto';
         });
     </script>
 </body>
 </html>
+
 
