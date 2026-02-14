@@ -3,7 +3,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Для тебя ❤️</title>
+    <title>Для моей Дашули ❤️</title>
+    <!-- Подключаем красивые шрифты -->
     <link href="https://fonts.googleapis.com" rel="stylesheet">
     <style>
         body {
@@ -26,7 +27,6 @@
             white-space: nowrap;
         }
 
-        /* Полёт ВВЕРХ (обычный режим) — летит через весь экран */
         @keyframes floatUp {
             0% { transform: translateY(0) rotate(0deg); opacity: 0; }
             10% { opacity: 1; }
@@ -34,7 +34,6 @@
             100% { transform: translateY(-120vh) rotate(360deg); opacity: 0; }
         }
 
-        /* Падение ВНИЗ (режим драмы) — летит через весь экран */
         @keyframes fallDown {
             0% { transform: translateY(0) rotate(0deg); opacity: 0; }
             10% { opacity: 1; }
@@ -46,13 +45,14 @@
             text-align: center; 
             z-index: 1000; 
             background: rgba(255, 255, 255, 0.95); 
-            padding: 30px; 
+            padding: 40px; 
             border-radius: 40px; 
             box-shadow: 0 15px 40px rgba(214, 51, 132, 0.15);
             backdrop-filter: blur(5px);
             border: 2px solid #ffdeeb;
             width: 550px;
-            height: 300px;
+            max-width: 90vw;
+            min-height: 300px;
             display: flex;
             flex-direction: column;
             align-items: center;
@@ -60,32 +60,32 @@
             position: relative;
         }
 
-        h1 { color: #d63384; font-family: 'Pacifico', cursive; font-size: 2.2rem; margin-bottom: 40px; }
+        h1 { color: #d63384; font-family: 'Pacifico', cursive; font-size: 2.2rem; margin-bottom: 40px; line-height: 1.4; }
         
         .buttons-container {
             position: relative;
             width: 100%;
-            height: 80px;
+            height: 100px;
             display: flex;
             justify-content: center;
             align-items: center;
         }
 
         button {
-            padding: 12px 40px;
-            font-size: 20px;
+            padding: 15px 40px;
+            font-size: 22px;
             border: none;
-            border-radius: 18px;
+            border-radius: 20px;
             cursor: pointer;
             font-weight: bold;
             font-family: 'Comfortaa', cursive;
+            transition: transform 0.2s;
         }
 
         #yesBtn { 
             background: linear-gradient(45deg, #ff4d6d, #ff758f); 
             color: white;
-            box-shadow: 0 6px 15px rgba(255, 77, 109, 0.3);
-            margin-right: 120px;
+            box-shadow: 0 6px 15px rgba(255, 77, 109, 0.4);
             z-index: 1001;
         }
 
@@ -93,7 +93,6 @@
             background-color: #ced4da; 
             color: white; 
             position: absolute;
-            left: 55%;
             z-index: 1002;
         }
 
@@ -108,35 +107,29 @@
             animation: shake 0.6s infinite ease-in-out;
         }
 
-        .joke-tag {
-            position: absolute;
-            bottom: 10px;
-            right: 15px;
-            font-size: 10px;
-            color: #ccc;
-        }
+        .joke-tag { position: absolute; bottom: 10px; right: 15px; font-size: 10px; color: #ccc; }
 
         @keyframes shake {
             0%, 100% { transform: translate(-50%, -50%) rotate(0); }
-            25% { transform: translate(-50.5%, -49.5%) rotate(-0.3deg); }
-            75% { transform: translate(-49.5%, -50.5%) rotate(0.3deg); }
+            25% { transform: translate(-50.5%, -49.5%) rotate(-0.5deg); }
+            75% { transform: translate(-49.5%, -50.5%) rotate(0.5deg); }
         }
 
         #retryBtn {
             position: fixed; bottom: 30px; right: 30px; display: none;
-            background-color: #FFA07A; color: white; z-index: 2000;
+            background: #ffb347; color: white; z-index: 2000;
             padding: 15px 30px; border-radius: 15px; border: none;
-            cursor: pointer;
+            cursor: pointer; font-family: 'Comfortaa', cursive; font-weight: bold;
         }
     </style>
 </head>
 <body>
 
     <div id="main-ui">
-        <h1 id="text">Ты будешь моей валентинкой?</h1>
+        <h1 id="text">Дашуля, ты будешь моей валентинкой?</h1>
         <div class="buttons-container">
             <button id="yesBtn">Да</button>
-            <button id="noBtn">Нет</button>
+            <button id="noBtn" style="left: 60%;">Нет</button>
         </div>
     </div>
 
@@ -146,7 +139,7 @@
         <div class="joke-tag">*Шутка</div>
     </div>
 
-    <button id="retryBtn">Даю 2 шанс</button>
+    <button id="retryBtn">Ладно, даю 2 шанс</button>
 
     <script>
         const noBtn = document.getElementById('noBtn');
@@ -156,24 +149,22 @@
         const dramaText = document.getElementById('drama-text');
         
         let flowInterval;
-        let wasInDrama = false;
+        // Используем localStorage, чтобы сайт "помнил" драму даже после перезагрузки
+        let wasInDrama = localStorage.getItem('wasInDrama') === 'true';
 
         function spawnItem(symbols, isSad) {
             const item = document.createElement('div');
             item.className = 'falling-item';
             item.innerHTML = symbols[Math.floor(Math.random() * symbols.length)];
-            
-            // Распределяем по всей ширине
             item.style.left = (Math.random() * 100) + 'vw';
-            
-            const duration = Math.random() * 3 + 4; // Чуть медленнее, чтобы успевали пролететь
+            const duration = Math.random() * 3 + 4;
             item.style.fontSize = (Math.random() * 20 + 20) + 'px';
             
             if (isSad) {
-                item.style.top = '-100px'; // Старт выше экрана
+                item.style.top = '-100px';
                 item.style.animation = `fallDown ${duration}s linear forwards`;
             } else {
-                item.style.bottom = '-100px'; // Старт ниже экрана
+                item.style.bottom = '-100px';
                 item.style.animation = `floatUp ${duration}s linear forwards`;
             }
             
@@ -185,12 +176,7 @@
             clearInterval(flowInterval);
             const isSadMode = mode === 'sad';
             const icons = isSadMode ? ['💔', '😢', '😭', '🥺', '💧'] : ['❤️', '💖', '💗', '💕', '🌸'];
-            
-            // Мгновенно выкидываем 20 штук, чтобы экран сразу был полон
-            for(let i = 0; i < 20; i++) {
-                spawnItem(icons, isSadMode);
-            }
-            
+            for(let i = 0; i < 20; i++) spawnItem(icons, isSadMode);
             flowInterval = setInterval(() => spawnItem(icons, isSadMode), 200);
         }
 
@@ -204,14 +190,15 @@
             
             if (noClickCount >= 3) {
                 wasInDrama = true;
+                localStorage.setItem('wasInDrama', 'true'); // Запоминаем косяк :)
                 document.body.style.backgroundColor = "#e8e8e8";
                 mainUi.style.display = 'none';
                 retryBtn.style.display = 'block';
                 dramaText.style.display = 'block';
                 startFlow('sad');
             } else {
-                const maxX = mainUi.clientWidth - noBtn.offsetWidth - 40;
-                const maxY = mainUi.clientHeight - noBtn.offsetHeight - 40;
+                const maxX = mainUi.clientWidth - noBtn.offsetWidth - 20;
+                const maxY = mainUi.clientHeight - noBtn.offsetHeight - 20;
                 noBtn.style.position = 'absolute';
                 noBtn.style.left = Math.random() * maxX + 'px';
                 noBtn.style.top = Math.random() * maxY + 'px';
@@ -220,21 +207,33 @@
         });
 
         yesBtn.addEventListener('click', () => {
+            // Тот самый текст, который ты хотел
             const finalTitle = wasInDrama ? "Абалдеть! А ломалась-то как... ❤️" : "Абалдеть! ❤️";
+            
             mainUi.innerHTML = `<h1 style="font-size: 2.5rem;">${finalTitle}</h1>`;
             dramaText.style.display = 'none';
             retryBtn.style.display = 'none';
             document.body.style.backgroundColor = "#fff5f8";
             startFlow('happy');
+            localStorage.removeItem('wasInDrama'); // Очищаем историю после победы
             for(let i=0; i<40; i++) spawnItem(['❤️', '💖', '✨'], false);
         });
 
         retryBtn.addEventListener('click', () => {
-            location.reload();
+            // При нажатии "2 шанс" просто возвращаем UI
+            dramaText.style.display = 'none';
+            retryBtn.style.display = 'none';
+            mainUi.style.display = 'flex';
+            document.body.style.backgroundColor = "#fff5f8";
+            startFlow('happy');
+            noClickCount = 0;
+            // Кнопка "Нет" возвращается на место
+            noBtn.style.position = 'absolute';
+            noBtn.style.left = '60%';
+            noBtn.style.top = 'auto';
         });
     </script>
 </body>
 </html>
-
 
 
