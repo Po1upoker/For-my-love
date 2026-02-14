@@ -33,7 +33,7 @@
             text-align: center; z-index: 1000; background: rgba(255, 255, 255, 0.95); 
             padding: 20px; border-radius: 40px; box-shadow: 0 15px 40px rgba(214, 51, 132, 0.15);
             backdrop-filter: blur(5px); border: 2px solid #ffdeeb; width: 700px;
-            max-width: 95vw; height: 250px; display: flex; flex-direction: column;
+            max-width: 95vw; min-height: 250px; display: flex; flex-direction: column;
             align-items: center; justify-content: center; position: relative;
         }
 
@@ -51,9 +51,9 @@
         #noBtn { background-color: #ced4da; color: white; right: 15%; }
 
         .special-btn {
-            position: absolute !important; bottom: 20px !important; right: 20px !important;
-            width: auto !important; height: auto !important; padding: 10px 20px !important;
-            font-size: 16px !important; background: #ff758f !important; color: white !important;
+            position: relative !important; margin-top: 20px !important;
+            width: auto !important; height: auto !important; padding: 10px 25px !important;
+            font-size: 18px !important; background: #ff758f !important; color: white !important;
             top: auto !important; transform: none !important; box-shadow: 0 4px 12px rgba(255, 117, 143, 0.4);
         }
 
@@ -65,14 +65,13 @@
 
         .game-photo {
             position: absolute; width: 260px; border: 10px solid white;
-            border-bottom-width: 30px; /* Эффект поляроида */
-            border-radius: 3px; box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+            border-bottom-width: 35px; border-radius: 3px; box-shadow: 0 4px 15px rgba(0,0,0,0.2);
             cursor: pointer; transition: transform 0.6s cubic-bezier(0.23, 1, 0.32, 1), opacity 0.5s;
             user-select: none;
         }
 
         #qr-container {
-            display: none; text-align: center; z-index: 2900;
+            display: none; text-align: center; z-index: 5000;
             animation: fadeIn 0.8s forwards;
         }
 
@@ -115,14 +114,14 @@
 
     <div id="game-overlay">
         <div id="qr-container">
-            <h2 style="color: #d63384; font-family: 'Pacifico', cursive; font-size: 2.2rem; margin-bottom: 20px;">Твой подарок! ❤️</h2>
+            <h2 style="color: #d63384; font-family: 'Pacifico', cursive; font-size: 2.2rem; margin-bottom: 20px;">Твой подарок ❤️</h2>
             <img src="img/qr.jpg" alt="QR Код">
-            <p style="margin-top: 20px; color: #d63384; font-weight: bold; font-size: 1.2rem;">Сканируй скорее, малышка!</p>
+            <p style="margin-top: 20px; color: #d63384; font-weight: bold; font-size: 1.2rem;">Ета код вб, можешь не сканировать</p>
         </div>
     </div>
 
     <div id="drama-text">
-        <span style="font-size: 24px; display: block; line-height: 1.4;">«Моё сердце не пазл, но ты только что рассыпала его по всему полу... 💔</span><br>
+        <span style="font-size: 24px; display: block; line-height: 1.4;">Моё сердце не пазл, но ты только что рассыпала его по всему полу... 💔</span><br>
         <span style="font-size: 20px; color: #444; font-weight: bold;">Тварь вонючка сучка.</span>
     </div>
 
@@ -160,8 +159,26 @@
 
         startFlow('happy');
 
-        noBtn.addEventListener('mousedown', (e) => {
+        function resetMain() {
+            mainUi.innerHTML = `
+                <h1 id="text">Дашуля, ты будешь моей валентинкой?</h1>
+                <div class="buttons-container" id="btnContainer">
+                    <button id="yesBtn">Да</button>
+                    <button id="noBtn">Нет</button>
+                </div>
+            `;
+            // Перепривязываем события, так как мы удалили старые элементы
+            document.getElementById('yesBtn').onclick = handleYes;
+            document.getElementById('noBtn').onmousedown = handleNo;
+            document.getElementById('noBtn').style.right = '15%';
+            document.getElementById('noBtn').style.left = 'auto';
+            window.noClickCount = 0;
+        }
+
+        function handleNo(e) {
             e.preventDefault();
+            const btn = e.target;
+            const container = document.getElementById('btnContainer');
             window.noClickCount = (window.noClickCount || 0) + 1;
             if (window.noClickCount >= 3) {
                 wasInDrama = true; localStorage.setItem('wasInDrama', 'true');
@@ -169,15 +186,15 @@
                 mainUi.style.display = 'none'; retryBtn.style.display = 'block';
                 dramaText.style.display = 'block'; startFlow('sad');
             } else {
-                const maxX = btnContainer.offsetWidth - noBtn.offsetWidth;
-                const maxY = btnContainer.offsetHeight - noBtn.offsetHeight;
-                noBtn.style.left = Math.random() * maxX + 'px';
-                noBtn.style.top = Math.random() * maxY + 'px';
-                noBtn.style.right = 'auto'; noBtn.style.transform = 'none';
+                const maxX = container.offsetWidth - btn.offsetWidth;
+                const maxY = container.offsetHeight - btn.offsetHeight;
+                btn.style.left = Math.random() * maxX + 'px';
+                btn.style.top = Math.random() * maxY + 'px';
+                btn.style.right = 'auto'; btn.style.transform = 'none';
             }
-        });
+        }
 
-        yesBtn.addEventListener('click', () => {
+        function handleYes() {
             if (wasInDrama) {
                 mainUi.innerHTML = `
                     <h1 style="font-size: 2.2rem; margin: 0; width: 100%; text-align: center;">Ну вот, кисуль, а ты ломалась ❤️</h1>
@@ -187,11 +204,18 @@
                 localStorage.removeItem('wasInDrama');
                 for(let i=0; i<40; i++) spawnItem(['❤️', '💖', '✨'], false);
             } else {
-                mainUi.innerHTML = `<h1 style="font-size: 1.6rem; margin: 0; width: 100%; text-align: center;">Вернись обратно, нажми нет и потом тока да, я че зря тут писал код </h1>`;
+                mainUi.innerHTML = `
+                    <h1 style="font-size: 1.6rem; margin: 0; width: 100%; text-align: center;">Вернись обратно, нажми нет и потом тока да, я че зря тут писал код</h1>
+                    <button class="special-btn" onclick="resetMain()">Вернуться</button>
+                `;
             }
             dramaText.style.display = 'none'; retryBtn.style.display = 'none';
             document.body.style.backgroundColor = "#fff5f8"; startFlow('happy');
-        });
+        }
+
+        // Первичная инициализация
+        yesBtn.onclick = handleYes;
+        noBtn.onmousedown = handleNo;
 
         function startPhotoGame() {
             const overlay = document.getElementById('game-overlay');
@@ -202,20 +226,16 @@
                 const img = document.createElement('img');
                 img.src = `img/kisa${i}.jpg`;
                 img.className = 'game-photo';
-                
-                // Создаем эффект "небрежной стопки"
-                const randomX = (Math.random() - 0.5) * 80; // Смещение по горизонтали
-                const randomY = (Math.random() - 0.5) * 60; // Смещение по вертикали
-                const randomRot = (Math.random() - 0.5) * 50; 
-                
+                const randomX = (Math.random() - 0.5) * 100;
+                const randomY = (Math.random() - 0.5) * 80;
+                const randomRot = (Math.random() - 0.5) * 60;
                 img.style.transform = `translate(${randomX}px, ${randomY}px) rotate(${randomRot}deg)`;
                 img.style.zIndex = 4000 + (30 - i);
 
                 img.onclick = function() {
                     const side = Math.random() > 0.5 ? 1 : -1;
                     this.style.transform = `translate(${side * 1400}px, -600px) rotate(${side * 180}deg) scale(0.1)`;
-                    this.style.opacity = '0';
-                    this.style.pointerEvents = 'none';
+                    this.style.opacity = '0'; this.style.pointerEvents = 'none';
                     setTimeout(() => this.remove(), 600);
                     remaining--;
                     if (remaining === 0) document.getElementById('qr-container').style.display = 'block';
@@ -226,12 +246,9 @@
 
         retryBtn.addEventListener('click', () => {
             dramaText.style.display = 'none'; retryBtn.style.display = 'none';
-            mainUi.style.display = 'flex'; document.body.style.backgroundColor = "#fff5f8";
-            startFlow('happy'); window.noClickCount = 0;
-            noBtn.style.left = 'auto'; noBtn.style.right = '15%'; noBtn.style.top = '50%';
-            noBtn.style.transform = 'translateY(-50%)';
+            mainUi.style.display = 'flex'; resetMain();
+            document.body.style.backgroundColor = "#fff5f8"; startFlow('happy');
         });
     </script>
 </body>
 </html>
-
